@@ -1,22 +1,12 @@
-const knexDb = require('../knex');
+const collectionModel = require('../models/collection');
 
 class Collection {
-    info = {};
-
-    async getData() {
-        // list of tasks for today
-        knexDb.column('task', {tasklist: 'title'})
-        .select().from('lists')
-        .rightJoin('todo', 'lists.id', 'todo.listid')
-        .where('todo.due_date', new Date())
-        .then((data) => {
-           this.info = data;
-        })
+    getData() {
+       collectionModel.getData();
     };
 
     showDate(res) {
-        res.status(200);
-        res.json(this.info);
+        collectionModel.showDate(res);
     }
 }
 

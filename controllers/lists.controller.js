@@ -1,50 +1,22 @@
-const knexDb = require('../knex');
 const tasks = require('./tasks.controller');
+const listModel = require('../models/lists');
+
 class Lists {
     
     createList(req, res) {
-        const {id, title} = req.body;
-        knexDb('lists').insert({id: id, title: title}, "*")
-        .catch((err) => {
-            res.json(err);
-        })
-        .then((data) => {
-            res.status(201);
-            res.json(data);
-        });
+        listModel.createList(req, res);
     }
 
     getLists(req, res) {
-        knexDb("lists").then((data) => {
-            res.status(200);
-            res.json(data);
-        })
+        listModel.getLists(req, res);
     }
 
     updateTask(req, res) {
-        knexDb('lists')
-            .where('id', req.params.id)
-            .update({title: req.body.title}, "*")
-            .catch((err) => {
-                res.json(err);
-            })
-            .then((data) => {
-                    res.status(200);
-                    res.json(data);
-            });
+        listModel.updateTask(req, res);
     }
 
     deleteList(req, res) {
-        knexDb('lists')
-        .where('id', req.params.id) 
-        .del()
-        .catch((err) => {
-            res.json(err);
-        })
-        .then(() => {
-            res.status(200);
-            res.end();
-        })
+        listModel.deleteList(req, res);
     }
 
     createTask(req, res) {
@@ -53,28 +25,7 @@ class Lists {
     }
 
     getTasks(req, res) {
-        const listid = req.params.listid;
-        const all = req.query.all;
-        if (all === 'true') {
-             knexDb("todo")
-             .where('listid', listid)
-             .then((data) => {
-                res.status(200);
-                res.json(data);
-            })
-        }    
-        else if(all === 'false') {
-             knexDb("todo")
-             .where({listid: listid, done: false})
-             .then((data) => {
-                res.status(200);
-                res.json(data);
-            })
-        }
-        else {
-            res.status(400);
-            res.end('Bad request');
-        }     
+       listModel.getTasks(req, res);
     }
 }
 
