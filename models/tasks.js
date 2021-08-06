@@ -34,10 +34,17 @@ class TaskModel {
     }
 
     updateTask(req, res) {
-        if (req.body.task && !req.body.done && !req.body.due_date) {  
+        const tasksField = ['task', 'done', 'due_date', 'listid'];
+        let updatedField = {};
+
+        tasksField.forEach(elem => {
+            if (req.body[elem] !== undefined) {
+                updatedField[elem] = req.body[elem];
+            }
+        })
             knexDb('todo')
             .where('id', req.params.id)
-            .update({task: req.body.task}, "*")
+            .update(updatedField, "*")
             .catch((err) => {
                 res.json(err);
             })
@@ -45,35 +52,6 @@ class TaskModel {
                     res.status(200);
                     res.json(data);
             });
-        }
-        else if (!req.body.task && req.body.done && !req.body.due_date) {
-            knexDb('todo')
-            .where('id', req.params.id)
-            .update({done: req.body.done}, "*")
-            .catch((err) => {
-                res.json(err);
-            })
-            .then((data) => {
-                    res.status(200);
-                    res.json(data);
-            });
-        }
-        else if (!req.body.task && !req.body.done && req.body.due_date) {
-            knexDb('todo')
-            .where('id', req.params.id)
-            .update({due_date: req.body.due_date}, "8")
-            .catch((err) => {
-                res.json(err);
-            })
-            .then((data) => {
-                    res.status(200);
-                    res.json(data);
-            });
-        }
-        else {
-            res.status(400);
-            res.end('Bad request');
-        } 
     }
 
     putTask(req, res) {
